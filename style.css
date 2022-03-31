@@ -1,0 +1,56 @@
+body{
+    background-color: rgb(255, 255, 255);
+}
+main {
+    padding: 5% 15%;
+}
+
+.Topico img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+
+
+
+}
+
+.Topico span {
+
+    margin-left: 10%;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}
+
+header {
+    padding: 2%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 10px solid rgb(96, 227, 206);
+    box-shadow: 13px 13px 20px black;
+    margin-bottom: 10vh;
+
+
+}
+
+.Topico {
+    width: 20vw;
+    display: flex;
+    align-items: center;
+}
+
+section {
+    padding: 5%;
+    border: 2px solid black;
+    margin-bottom: 5vh;
+    position: relative;
+    width: 85%;
+}
+
+article {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

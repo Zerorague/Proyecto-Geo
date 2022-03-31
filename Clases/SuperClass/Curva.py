@@ -1,3 +1,4 @@
+from turtle import *
 import math
 import numpy
 
@@ -27,27 +28,24 @@ class curva():
     def GetRa(self):
         return self.__ra
 
-    @GetV1.setter
-    def SetV1(self, valor):
+    def SetV1(self, este, norte):
         try:
-            if type(valor) == float or type(valor) == int:
-                self.__v1 = valor
+            if (type(este) == float, type(norte) == float):
+                self.__v1 = (este, norte)
         except TypeError:
             return "no es un valor numerico"
 
-    @GetV2.setter
-    def SetV2(self, valor):
+    def SetV2(self, este, norte):
         try:
-            if type(valor) == float or type(valor) == int:
-                self.__v2 = valor
+            if (type(este) == float, type(norte) == float):
+                self.__v2 = (este, norte)
         except TypeError:
             return "no es un valor numerico"
 
-    @GetV3.setter
-    def SetV3(self, valor):
+    def SetV3(self, este, norte):
         try:
-            if type(valor) == float or type(valor) == int:
-                self.__v3 = valor
+            if (type(este) == float, type(norte) == float):
+                self.__v3 = (este, norte)
         except TypeError:
             return "no es un valor numerico"
 
@@ -60,6 +58,8 @@ class curva():
             return "no es un valor numerico"
 
 # -----------Metodos o funciones---------------------
+
+# ----------azimut-------------
     def Azimut_1_2(self):
         dn = self.__v2[1]-self.__v1[1]
         de = self.__v2[0]-self.__v1[0]
@@ -86,5 +86,44 @@ class curva():
             elif dn > 0 and de < 0:  # -->cuarto cuadrante
                 return math.radians(360) + math.atan(de/dn)
 
+# -------------distancias alineamientos-------------
+    def dh_1_2(self):
+        dn = self.__v2[1]-self.__v1[1]
+        de = self.__v2[0]-self.__v1[0]
+        return math.sqrt(dn**2 + de**2)
+
+    def dh_2_3(self):
+        dn = self.__v3[1]-self.__v2[1]
+        de = self.__v3[0]-self.__v2[0]
+        return math.sqrt(dn**2 + de**2)
+
+    def dh_1_3(self):
+        dn = self.__v3[1]-self.__v1[1]
+        de = self.__v3[0]-self.__v1[0]
+        return math.sqrt(dn**2 + de**2)
+
+# --------------elementos geometricos de la curva---------------
+    def Omega(self):
+        try:
+            if self.Azimut_1_2() > self.Azimut_2_3():
+                return (self.Azimut_1_2()-self.Azimut_2_3)/2
+            else:
+                return (self.Azimut_2_3()-self.Azimut_1_2())/2
+        except:
+            return "No existe deflexion"
+
+    def Alfa(self):  # -----identificar problema
+        if 0 < self.Azimut_1_2() < math.radians(90) and math.radians(90) < self.Azimut_2_3() < math.radians(180) or 0 < self.Azimut_1_2() < math.radians(90) and 0 < self.Azimut_2_3() < math.radians(90) and self.Azimut_1_2() < self.Azimut_2_3() or math.radians(90) < self.Azimut_1_2() < math.radians(180) and math.radians(90) < self.Azimut_2_3() < math.radians(180) and self.Azimut_1_2() < self.Azimut_2_3() or math.radians(180) < self.Azimut_1_2() < math.radians(270) and math.radians(180) < self.Azimut_2_3() < math.radians(270) and self.Azimut_1_2() < self.Azimut_2_3() or math.radians(270) < self.Azimut_1_2() < math.radians(360) and math.radians(270) < self.Azimut_2_3() < math.radians(360) and self.Azimut_1_2() < self.Azimut_2_3() or math.radians(90) < self.Azimut_1_2() < math.radians(180) and math.radians(180) < self.Azimut_2_3() < math.radians(270) or math.radians(90) < self.Azimut_1_2() < math.radians(180) and math.radians(90) < self.Azimut_2_3() < math.radians(180) and self.Azimut_1_2() < self.Azimut_2_3() or math.radians(270) < self.Azimut_1_2() < math.radians(360) and 0 < self.Azimut_2_3() < math.radians(90) or math.radians(270) < self.Azimut_1_2() < math.radians(360) and math.radians(270) < self.Azimut_2_3() < math.radians(360) and self.Azimut_1_2() < self.Azimut_2_3() or math.radians(180) < self.Azimut_1_2() < math.radians(270) and math.radians(270) < self.Azimut_2_3() < math.radians(360):
+            return math.radians(180) + (self.Omega()*2)
+
+        else:
+            return math.radians(180) - (self.Omega()*2)
+
 
 curv = curva((100, 100), (200, 150), (100, 50), 20)
+
+# curv.SetV1(300, 85)
+# curv.SetV2(75, 689)
+
+
+print(numpy.degrees(curv.Omega()))
