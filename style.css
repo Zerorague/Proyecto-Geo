@@ -2,13 +2,14 @@ body{
     background-color: rgb(255, 255, 255);
 }
 main {
-    padding: 5% 15%;
+    padding: 5% 5%;
 }
 
 .Topico img {
     width: 80px;
     height: 80px;
     border-radius: 50%;
+    position: relative;
 
 
 
@@ -46,11 +47,24 @@ section {
     border: 2px solid black;
     margin-bottom: 5vh;
     position: relative;
-    width: 85%;
+    width: 90%;
 }
 
 article {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.imagenes img {
+
+    width: 20vw;
+    height: 20vw;
+    border-radius: 25%;
+}
+
+.imagenes {
+    display: flex;
+    justify-content: space-around;
+    
 }
