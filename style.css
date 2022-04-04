@@ -73,7 +73,7 @@ article {
 }
 
 .uno {
-    width: 30px;
+    width: 20%;
     height: 30px;
     background-color: blue;
     border-radius: 50%;
@@ -83,7 +83,7 @@ article {
 }
 
 .dos {
-    width: 30px;
+    width: 20%;
     height: 30px;
     background-color: rgb(0, 255, 132);
     border-radius: 50%;
@@ -93,7 +93,7 @@ article {
 }
 
 .tres {
-    width: 30px;
+    width: 20%;
     height: 30px;
     background-color: rgb(212, 255, 0);
     border-radius: 50%;
@@ -103,7 +103,7 @@ article {
 }
 
 .cuatro {
-    width: 30px;
+    width: 20%;
     height: 30px;
     background-color: rgb(251, 0, 255);
     border-radius: 50%;
