@@ -72,80 +72,35 @@ article {
     
 }
 
-.uno {
+.marcador {
     width: 30px;
     height: 30px;
-    background-color: blue;
+    background-color: rgb(255, 255, 255);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center; 
+    box-shadow: 5px 5px 5px black;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.dos {
-    width: 30px;
-    height: 30px;
-    background-color: rgb(0, 255, 132);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
+
+nav li {
+    display:inline-block
 }
 
-.tres {
-    width: 30px;
-    height: 30px;
-    background-color: rgb(212, 255, 0);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
+nav a {
+    display: block;
+    float: left;
+    margin-right: 0.12em;
+    padding: 1em 1.5em;
+    background: #ffffff;
+    box-shadow: inset 0px -2px 0px 0px rgba(0,0,0,0.25);
+    text-decoration: none;
+    text-shadow: 1px 1px 0px #000000;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.cuatro {
-    width: 30px;
-    height: 30px;
-    background-color: rgb(251, 0, 255);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-}
+nav {
 
-#caja-marcador {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    margin-top: 5%;
-    width: 20px;
-}
-
-#caja-marcador .uno {
-    border-radius: 0;
-    width: 20px;
-    display: flex;
-    justify-content: flex-start;
-}
-
-#caja-marcador .dos {
-    border-radius: 0;
-    width: 20px;
-    display: flex;
-    justify-content: flex-start;
-}
-
-#caja-marcador .tres {
-    border-radius: 0;
-    width: 20px;
-    display: flex;
-    justify-content: flex-start;
-}
-
-#caja-marcador .cuatro {
-    border-radius: 0;
-    width: 20px;
-    display: flex;
-    justify-content: flex-start;
 }
