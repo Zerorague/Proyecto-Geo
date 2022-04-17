@@ -1,7 +1,7 @@
 
 from cmath import cos, pi
 from user_class import User, usuario
-from math import sqrt, atan, tan
+from math import sqrt, atan, tan, sin
 
 
 class Curva(User):
@@ -119,10 +119,19 @@ class Curva(User):
             pass
 
     def Secante(self):
-        return self.__radio*((1/cos(self.alpha_medio()))-1)  # revisar formula
+        return self.__radio*((1/cos(self.alpha_medio()))-1)
 
     def desarrolloCurva(self):
         return (pi*self.__radio*self.alpha_medio())/2*pi
+
+    def cuerdaMaxima(self):
+        return 2*self.__radio*sin(self.alpha_medio())
+
+    def ensanche(self):
+        pass
+
+    def Peralte(self):
+        pass
 
 
 curva = Curva(1, "Linares", ((1000, 1000), (1500, 1500), (2000, 2500)), 3000)
@@ -133,3 +142,4 @@ print(curva.azimuts())
 print(curva.Tangente())
 print(curva.Secante())
 print(curva.desarrolloCurva())
+print(curva.cuerdaMaxima())
