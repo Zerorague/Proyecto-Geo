@@ -1,5 +1,5 @@
 
-from cmath import pi
+from cmath import cos, pi
 from user_class import User, usuario
 from math import sqrt, atan, tan
 
@@ -118,9 +118,18 @@ class Curva(User):
         except TypeError:
             pass
 
+    def Secante(self):
+        return self.__radio*((1/cos(self.alpha_medio()))-1)  # revisar formula
 
-curva = Curva(1, "Linares", ((1000, 1000), (1500, 1500), (2000, 2300)), 3000)
+    def desarrolloCurva(self):
+        return (pi*self.__radio*self.alpha_medio())/2*pi
 
+
+curva = Curva(1, "Linares", ((1000, 1000), (1500, 1500), (2000, 2500)), 3000)
+
+print(curva.Get_project_name)
 print(curva.distancias_vertices())
 print(curva.azimuts())
 print(curva.Tangente())
+print(curva.Secante())
+print(curva.desarrolloCurva())
