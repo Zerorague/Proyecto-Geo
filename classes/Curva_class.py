@@ -1,14 +1,11 @@
 
-from cmath import cos, pi
 from user_class import User, usuario
-from math import sqrt, atan, tan, sin
+from math import sqrt, atan, tan, sin, degrees, cos, acos, pi
 
 
-class Curva(User):
+class Curva():
     def __init__(self, id, project_name, vertices, radio=200) -> None:
         self.__id = id
-        self.__id_user = usuario.Get_id  # foranea
-        self.__user_name = usuario.Get_user_name  # foranea
         self.__project_name = project_name
         self.__vertices = vertices
         self.__radio = radio
@@ -21,18 +18,12 @@ class Curva(User):
         self.__DeltaNorte1 = self.__n2-self.__n1
         self.__DeltaEste2 = self.__e3-self.__e2
         self.__DeltaNorte2 = self.__n3-self.__n2
+        self.__DeltaEste3 = self.__e3-self.__e1
+        self.__DeltaNorte3 = self.__n3-self.__n1
 
     @property
     def Get_id(self):
         return self.__id
-
-    @property
-    def Get_id_user(self):
-        return self.__id_user
-
-    @property
-    def Get_user_name(self):
-        return self.__user_name
 
     @property
     def Get_project_name(self):
@@ -79,7 +70,8 @@ class Curva(User):
     def distancias_vertices(self):
         distancia_v_1_2 = sqrt(self.__DeltaEste1**2+self.__DeltaNorte1**2)
         distancia_v_2_3 = sqrt(self.__DeltaEste2**2+self.__DeltaNorte2**2)
-        return (distancia_v_1_2, distancia_v_2_3)
+        distancia_v_1_3 = sqrt(self.__DeltaEste3**2+self.__DeltaNorte3**2)
+        return (distancia_v_1_2, distancia_v_2_3, distancia_v_1_3)
 
     def azimuts(self):
         try:
@@ -100,15 +92,30 @@ class Curva(User):
                 az2 = pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
             else:
                 az2 = 2*pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
+
+            if self.__DeltaEste3 > 0 and self.__DeltaNorte3 > 0:
+                az3 = atan(self.__DeltaEste3/self.__DeltaNorte3)
+            elif self.__DeltaEste3 > 0 and self.__DeltaNorte3 < 0:
+                az3 = pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
+            elif self.__DeltaEste3 < 0 and self.__DeltaNorte3 < 0:
+                az3 = pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
+            else:
+                az3 = 2*pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
         except ZeroDivisionError:
             return "Ha ocurridio una division por 0"
 
-        return (az1, az2)
+        return (az1, az2, az3)
+
+    def Alfa(self):
+        distancia_1_2, distancia_2_3, distancia_1_3 = self.distancias_vertices()
+        return 2*pi-(acos((distancia_1_2**2+distancia_2_3**2-(distancia_1_3**2))/(2*distancia_1_2*distancia_2_3)))
 
     def alpha_medio(self):
         try:
-            az1, az2 = self.azimuts()
-            return (az1-az2)/2
+            az1, az2, az3 = self.azimuts()
+            if az1 > az2:
+                return (az1-az2)/2
+            return(az2-az1)/2
         except ValueError:
             pass
 
@@ -133,9 +140,10 @@ class Curva(User):
     def Peralte(self):
         pass
 
+    # -------------main------------------------
 
-curva = Curva(1, "Linares", ((1000, 1000), (1500, 1500), (2000, 2500)), 3000)
 
+curva = Curva(1, "Linares", ((1000, 1000), (1500, 1600), (900, 2600)), 3000)
 print(curva.Get_project_name)
 print(curva.distancias_vertices())
 print(curva.azimuts())
@@ -143,3 +151,5 @@ print(curva.Tangente())
 print(curva.Secante())
 print(curva.desarrolloCurva())
 print(curva.cuerdaMaxima())
+print(degrees(curva.alpha_medio()))
+print(degrees(curva.Alfa()))
