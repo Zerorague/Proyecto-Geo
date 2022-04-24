@@ -1,13 +1,16 @@
 
+import re
 from user_class import User, usuario
 from math import sqrt, atan, tan, sin, degrees, cos, acos, pi
 
 
 class Curva():
-    def __init__(self, id, project_name, vertices, radio=200) -> None:
+    def __init__(self, id, project_name, vertices, radio=200, intervalo=10, dm_inicial=0) -> None:
         self.__id = id
         self.__project_name = project_name
         self.__vertices = vertices
+        self.__intervalo = intervalo
+        self.__dm_inicial = dm_inicial
         self.__radio = radio
         # ---------variables globales (desempaquetado)---------
         self.__v1, self.__v2, self.__v3 = self.__vertices
@@ -30,12 +33,20 @@ class Curva():
         return self.__project_name
 
     @property
+    def Get_intervalo(self):
+        return self.__intervalo
+
+    @property
     def Get_vertices(self):
         # count = 1
         # for i in self.__vertices:
         #     print(f"V{count}= ESTE: {i[0]} NORTE: {i[1]}")
         #     count += 1
         return self.__vertices
+
+    @property
+    def Get_dm_inicial(self):
+        return self.__dm_inicial
 
     @property
     def Get_radio(self):
@@ -57,6 +68,20 @@ class Curva():
                         self.__vertices = valor
                     else:
                         return "Esperaba numeros"
+
+    @Get_intervalo.setter
+    def Set_intervalo(self, valor):
+        if type(valor) == int:
+            self.__intervalo = valor
+        else:
+            return "intervalo debe ser un entero"
+
+    @Get_dm_inicial.setter
+    def Set_dm_inicial(self, valor):
+        if type(valor) == float:
+            self.__dm_inicial = valor
+        else:
+            return "no es un valor numerico"
 
     @Get_radio.setter
     def Set_radio(self, valor):
@@ -106,9 +131,18 @@ class Curva():
 
         return (az1, az2, az3)
 
-    def Alfa(self):
+    def anguloExterior(self):
         distancia_1_2, distancia_2_3, distancia_1_3 = self.distancias_vertices()
         return 2*pi-(acos((distancia_1_2**2+distancia_2_3**2-(distancia_1_3**2))/(2*distancia_1_2*distancia_2_3)))
+
+    def curvaDerecha(self):  # arreglar
+        if (self.anguloExterior()-(self.alpha_medio()*2)) == pi:
+            return True
+        else:
+            return False
+
+    def Alfa(self):  # arreglar
+        return self.anguloExterior()-(self.alpha_medio()*2)
 
     def alpha_medio(self):
         try:
@@ -140,16 +174,54 @@ class Curva():
     def Peralte(self):
         pass
 
+    def Resumen(self):
+        return f"A: {round(degrees(self.Alfa())*(10/9),4)}g\nr: {round(self.__radio,3)}"
+
     # -------------main------------------------
 
+    def DmsLineaEntrada(self):
+        distancia = self.__dm_inicial + \
+            self.distancias_vertices()[1]-self.Tangente()
+        dms = []
+        for i in range(int(self.__dm_inicial), int(distancia), self.__intervalo):
+            dms.append(i)
+        dms.pop(0)
+        dms.insert(0, self.__dm_inicial)
+        return dms
 
-curva = Curva(1, "Linares", ((1000, 1000), (1500, 1600), (900, 2600)), 3000)
-print(curva.Get_project_name)
-print(curva.distancias_vertices())
-print(curva.azimuts())
-print(curva.Tangente())
-print(curva.Secante())
-print(curva.desarrolloCurva())
-print(curva.cuerdaMaxima())
-print(degrees(curva.alpha_medio()))
-print(degrees(curva.Alfa()))
+    def DmsCurva(self):
+        distancia = self.__dm_inicial + \
+            self.distancias_vertices()[1]-self.Tangente()
+        dms = []
+        for i in range(self.DmsLineaEntrada()[-1], int(distancia+self.desarrolloCurva()), self.__intervalo):
+            if i > distancia:
+                dms.append(i)
+            else:
+                continue
+        dms.insert(0, distancia)
+        dms.append(distancia+self.desarrolloCurva())
+        return dms
+
+    def DmsLineaSalida(self):
+        distanciaFc = self.__dm_inicial + \
+            self.distancias_vertices()[1] - \
+            self.Tangente()+self.desarrolloCurva()
+        distanciaentrada = self.__dm_inicial + \
+            self.distancias_vertices()[1]-self.Tangente()
+        distancia = distanciaentrada + \
+            self.desarrolloCurva() + \
+            self.distancias_vertices()[2]-self.Tangente()
+        dms = []
+        for i in range(self.DmsCurva()[-2], int(distancia), self.__intervalo):
+            if i > distanciaFc:
+                dms.append(i)
+        dms.append(distancia)
+        return dms
+
+
+curva = Curva(1, "Linares", ((1000, 1000), (1500, 1500),
+                             (2000, 1700)), 500, 101, 100)
+print(curva.DmsLineaEntrada())
+print(curva.DmsCurva())
+print(curva.DmsLineaSalida())
+print(curva.curvaDerecha())
