@@ -38,10 +38,6 @@ class Curva():
 
     @property
     def Get_vertices(self):
-        # count = 1
-        # for i in self.__vertices:
-        #     print(f"V{count}= ESTE: {i[0]} NORTE: {i[1]}")
-        #     count += 1
         return self.__vertices
 
     @property
@@ -101,55 +97,57 @@ class Curva():
     def azimuts(self):
         try:
             if self.__DeltaEste1 > 0 and self.__DeltaNorte1 > 0:
-                az1 = atan(self.__DeltaEste1/self.__DeltaNorte1)
+                azimutOne = atan(self.__DeltaEste1/self.__DeltaNorte1)
             elif self.__DeltaEste1 > 0 and self.__DeltaNorte1 < 0:
-                az1 = pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
+                azimutOne = pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
             elif self.__DeltaEste1 < 0 and self.__DeltaNorte1 < 0:
-                az1 = pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
+                azimutOne = pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
             else:
-                az1 = 2*pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
+                azimutOne = 2*pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
 
             if self.__DeltaEste2 > 0 and self.__DeltaNorte2 > 0:
-                az2 = atan(self.__DeltaEste2/self.__DeltaNorte2)
+                azimutTwo = atan(self.__DeltaEste2/self.__DeltaNorte2)
             elif self.__DeltaEste2 > 0 and self.__DeltaNorte2 < 0:
-                az2 = pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
+                azimutTwo = pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
             elif self.__DeltaEste2 < 0 and self.__DeltaNorte2 < 0:
-                az2 = pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
+                azimutTwo = pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
             else:
-                az2 = 2*pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
+                azimutTwo = 2*pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
 
             if self.__DeltaEste3 > 0 and self.__DeltaNorte3 > 0:
-                az3 = atan(self.__DeltaEste3/self.__DeltaNorte3)
+                azimuthThree = atan(self.__DeltaEste3/self.__DeltaNorte3)
             elif self.__DeltaEste3 > 0 and self.__DeltaNorte3 < 0:
-                az3 = pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
+                azimuthThree = pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
             elif self.__DeltaEste3 < 0 and self.__DeltaNorte3 < 0:
-                az3 = pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
+                azimuthThree = pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
             else:
-                az3 = 2*pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
+                azimuthThree = 2*pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
         except ZeroDivisionError:
             return "Ha ocurridio una division por 0"
 
-        return (az1, az2, az3)
+        return (azimutOne, azimutTwo, azimuthThree)
 
     def anguloExterior(self):
         distancia_1_2, distancia_2_3, distancia_1_3 = self.distancias_vertices()
         return 2*pi-(acos((distancia_1_2**2+distancia_2_3**2-(distancia_1_3**2))/(2*distancia_1_2*distancia_2_3)))
 
     def curvaDerecha(self):  # arreglar
-        if (self.anguloExterior()-(self.alpha_medio()*2)) == pi:
+        if self.anguloExterior()-(self.anguloExterior()- self.azimuts()[0]) > pi:
             return True
         else:
             return False
 
-    def Alfa(self):  # arreglar
-        return self.anguloExterior()-(self.alpha_medio()*2)
-
+    def Alfa(self):
+        if self.curvaDerecha():
+            return pi+(self.alpha_medio()*2)
+        else:
+            return pi-(self.alpha_medio()*2)
     def alpha_medio(self):
         try:
-            az1, az2, az3 = self.azimuts()
-            if az1 > az2:
-                return (az1-az2)/2
-            return(az2-az1)/2
+            azimutOne, azimutTwo, azimuthThree = self.azimuts()
+            if azimutOne > azimutTwo:
+                return (azimutOne-azimutTwo)/2
+            return(azimutTwo-azimutOne)/2
         except ValueError:
             pass
 
@@ -220,7 +218,7 @@ class Curva():
 
 
 curva = Curva(1, "Linares", ((1000, 1000), (1500, 1500),
-                             (2000, 1700)), 500, 101, 100)
+                             (2000, 1300)), 500, 20, 100)
 print(curva.DmsLineaEntrada())
 print(curva.DmsCurva())
 print(curva.DmsLineaSalida())
