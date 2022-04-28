@@ -143,7 +143,7 @@ class Curva():
         distancia_1_2, distancia_2_3, distancia_1_3 = self.distancias_vertices()
         return 2*pi-(acos((distancia_1_2**2+distancia_2_3**2-(distancia_1_3**2))/(2*distancia_1_2*distancia_2_3)))
 
-    def curvaDerecha(self):  # arreglar
+    def curvaDerecha(self):
         az1, az2, az3 = self.azimuts()
         del az3
         if az1 > pi and az2 < pi/2:
@@ -199,7 +199,7 @@ class Curva():
 
     def DmsLineaEntrada(self):
         distancia = self.__dm_inicial + \
-            self.distancias_vertices()[1]-self.Tangente()
+            self.distancias_vertices()[0]-self.Tangente()
         dms = []
         try:
             for i in range(int(self.__dm_inicial), int(distancia), self.__intervalo):
@@ -212,7 +212,7 @@ class Curva():
 
     def DmsCurva(self):
         distancia = self.__dm_inicial + \
-            self.distancias_vertices()[1]-self.Tangente()
+            self.distancias_vertices()[0]-self.Tangente()
         dms = []
         try:
             for i in range(self.DmsLineaEntrada()[-1], int(distancia+self.desarrolloCurva()), self.__intervalo):
@@ -228,13 +228,13 @@ class Curva():
 
     def DmsLineaSalida(self):
         distanciaFc = self.__dm_inicial + \
-            self.distancias_vertices()[1] - \
+            self.distancias_vertices()[0] - \
             self.Tangente()+self.desarrolloCurva()
         distanciaentrada = self.__dm_inicial + \
-            self.distancias_vertices()[1]-self.Tangente()
+            self.distancias_vertices()[0]-self.Tangente()
         distancia = distanciaentrada + \
             self.desarrolloCurva() + \
-            self.distancias_vertices()[2]-self.Tangente()
+            self.distancias_vertices()[1]-self.Tangente()
         dms = []
         try:
             for i in range(self.DmsCurva()[-2], int(distancia), self.__intervalo):
@@ -257,13 +257,23 @@ class Curva():
                 (round(self.__e1+i*sin(az1), 3), round(self.__n1 + i*cos(az1), 3)))
         return coordenadas
 
+    def coordenadasCurva(self):
+        az1, az2, az3 = self.azimuts()
+        del az2, az3
+        coordenadaPc = ((self.__e1+(self.distancias_vertices()[0]-self.Tangente())*sin(
+            az1)), (self.__n1+(self.distancias_vertices()[0]-self.Tangente())*cos(az1)))
+        valor_a = []
+        for i in self.DmsCurva():
+            valor_a.append(i-self.DmsCurva()[0])
+        delta = []
+        for i in valor_a:
+            delta.append(radians((90*i)/(pi*self.__radio)))
+        return valor_a
 
-curva = Curva(1, "Linares", ((1000, 1000), (1500, 1450),
-              (500, 1400)), 3000, 10, 50, 30)
-print(curva.DmsLineaEntrada())
-print(curva.DmsCurva())
-print(curva.DmsLineaSalida())
-print(curva.curvaDerecha())
-curva.Set_vp = 40
+
+curva = Curva(1, "Linares", ((1000, 1000), (1500, 1500),
+              (1600, 1400)), 3000, 20, 0, 30)
+
 print(curva.Resumen())
-print(curva.coordenadasEntrada())
+print(curva.coordenadasCurva())
+print((degrees(curva.coordenadasCurva()[-1]))*(10/9))
