@@ -4,11 +4,12 @@ from math import radians, sqrt, atan, tan, sin, degrees, cos, acos, pi
 
 
 class Curva():
-    def __init__(self, id, project_name, vertices, radio=200, intervalo=10, dm_inicial=0, vp=30) -> None:
+    def __init__(self, id, project_name, vertices, radio=200, intervalo_recto=10, intervalo_curva=5, dm_inicial=0, vp=30) -> None:
         self.__id = id
         self.__project_name = project_name
         self.__vertices = vertices
-        self.__intervalo = intervalo
+        self.__intervalo_recto = intervalo_recto
+        self.__intervalo_curva = intervalo_curva
         self.__dm_inicial = dm_inicial
         self.__vp = vp
         self.__radio = radio
@@ -37,8 +38,12 @@ class Curva():
         return self.__vp
 
     @property
-    def Get_intervalo(self):
-        return self.__intervalo
+    def Get_intervalo_recto(self):
+        return self.__intervalo_recto
+
+    @property
+    def Get_intervalo_curva(self):
+        return self.__intervalo_curva
 
     @property
     def Get_vertices(self):
@@ -69,12 +74,19 @@ class Curva():
                     else:
                         return "Se esperaban numeros Reales"
 
-    @Get_intervalo.setter
-    def Set_intervalo(self, valor):
+    @Get_intervalo_recto.setter
+    def Set_intervalo_recto(self, valor):
         if type(valor) == int:
-            self.__intervalo = valor
+            self.__intervalo_recto = valor
         else:
             return "intervalo debe pertenecer a los enteros"
+
+    @Get_intervalo_curva.setter
+    def Set_intervalo_curva(self, valor):
+        if type(valor) == int:
+            self.__intervalo_curva = valor
+        else:
+            return "Intervalor debe pertenecer a los enteros"
 
     @Get_vp.setter
     def Set_vp(self, valor):
@@ -113,7 +125,7 @@ class Curva():
                 azimutOne = pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
             elif self.__DeltaEste1 < 0 and self.__DeltaNorte1 < 0:
                 azimutOne = pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
-            else:
+            elif self.__DeltaEste1 < 0 and self.__DeltaNorte1 > 0:
                 azimutOne = 2*pi + atan(self.__DeltaEste1/self.__DeltaNorte1)
 
             if self.__DeltaEste2 > 0 and self.__DeltaNorte2 > 0:
@@ -122,7 +134,7 @@ class Curva():
                 azimutTwo = pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
             elif self.__DeltaEste2 < 0 and self.__DeltaNorte2 < 0:
                 azimutTwo = pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
-            else:
+            elif self.__DeltaEste2 < 0 and self.__DeltaNorte2 > 0:
                 azimutTwo = 2*pi + atan(self.__DeltaEste2/self.__DeltaNorte2)
 
             if self.__DeltaEste3 > 0 and self.__DeltaNorte3 > 0:
@@ -131,17 +143,17 @@ class Curva():
                 azimuthThree = pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
             elif self.__DeltaEste3 < 0 and self.__DeltaNorte3 < 0:
                 azimuthThree = pi + atan(self.__DeltaEste3/self.__DeltaNorte3)
-            else:
-                azimuthThree = 2*pi + \
-                    atan(self.__DeltaEste3/self.__DeltaNorte3)
+            elif self.__DeltaEste3 < 0 and self.__DeltaNorte3 > 0:
+                azimuthThree = (
+                    2*pi + atan(self.__DeltaEste3/self.__DeltaNorte3))
         except ZeroDivisionError:
             return "Ha ocurridio una division por 0"
 
         return (azimutOne, azimutTwo, azimuthThree)
 
-    def anguloExterior(self):
-        distancia_1_2, distancia_2_3, distancia_1_3 = self.distancias_vertices()
-        return 2*pi-(acos((distancia_1_2**2+distancia_2_3**2-(distancia_1_3**2))/(2*distancia_1_2*distancia_2_3)))
+    # def anguloExterior(self):
+    #     distancia_1_2, distancia_2_3, distancia_1_3 = self.distancias_vertices()
+    #     return 2*pi-(acos(((distancia_1_2**2+distancia_2_3**2-(distancia_1_3**2))/(2*distancia_1_2*distancia_2_3))))
 
     def curvaDerecha(self):
         az1, az2, az3 = self.azimuts()
@@ -160,8 +172,9 @@ class Curva():
             azimutOne, azimutTwo, azimuthThree = self.azimuts()
             del azimuthThree
             if azimutOne > azimutTwo:
-                return radians((azimutOne-azimutTwo)/2)
-            return radians((azimutTwo-azimutOne)/2)
+                return (azimutOne-azimutTwo)/2
+            else:
+                return (azimutTwo-azimutOne)/2
         except ValueError:
             pass
 
@@ -181,7 +194,7 @@ class Curva():
         return self.__radio*((1/cos(self.alpha_medio()))-1)
 
     def desarrolloCurva(self):
-        return (pi*self.__radio*self.alpha_medio())/2*pi
+        return (pi*self.__radio*self.alpha_medio())/(pi/2)
 
     def cuerdaMaxima(self):
         return 2*self.__radio*sin(self.alpha_medio())
@@ -193,7 +206,7 @@ class Curva():
         pass
 
     def Resumen(self):
-        return f"VP: {self.__vp} km/h\nA: {round(degrees(self.Alfa())*(10/9),4)}g\nR: {round(self.__radio,3)}m\nT: {round(self.Tangente(),3)}m\nS: {round(self.Secante(),3)}m\nDC: {round(self.desarrolloCurva(),3)}m"
+        return f"VP: {self.__vp} km/h\nA: {round(degrees(self.Alfa())*(10/9),4)}g\nR: {round(self.__radio,3)}m\nT: {round(self.Tangente(),3)}m\nS: {round(self.Secante(),3)}m\nDC: {round(self.desarrolloCurva(),3)}m\nC: {round(self.cuerdaMaxima(),3)}m"
 
     # -------------main------------------------
 
@@ -202,7 +215,7 @@ class Curva():
             self.distancias_vertices()[0]-self.Tangente()
         dms = []
         try:
-            for i in range(int(self.__dm_inicial), int(distancia), self.__intervalo):
+            for i in range(int(self.__dm_inicial), int(distancia), self.__intervalo_recto):
                 dms.append(i)
             dms.pop(0)
             dms.insert(0, self.__dm_inicial)
@@ -215,7 +228,7 @@ class Curva():
             self.distancias_vertices()[0]-self.Tangente()
         dms = []
         try:
-            for i in range(self.DmsLineaEntrada()[-1], int(distancia+self.desarrolloCurva()), self.__intervalo):
+            for i in range(self.DmsLineaEntrada()[-1], int(distancia+self.desarrolloCurva()), self.__intervalo_curva):
                 if i > distancia:
                     dms.append(i)
                 else:
@@ -237,7 +250,7 @@ class Curva():
             self.distancias_vertices()[1]-self.Tangente()
         dms = []
         try:
-            for i in range(self.DmsCurva()[-2], int(distancia), self.__intervalo):
+            for i in range(self.DmsCurva()[-2], int(distancia), self.__intervalo_recto):
                 if i > distanciaFc:
                     dms.append(i)
             dms.append(distancia)
@@ -260,20 +273,38 @@ class Curva():
     def coordenadasCurva(self):
         az1, az2, az3 = self.azimuts()
         del az2, az3
-        coordenadaPc = ((self.__e1+(self.distancias_vertices()[0]-self.Tangente())*sin(
+        coordenadaPrincipioCurva = ((self.__e1+(self.distancias_vertices()[0]-self.Tangente())*sin(
             az1)), (self.__n1+(self.distancias_vertices()[0]-self.Tangente())*cos(az1)))
         valor_a = []
         for i in self.DmsCurva():
             valor_a.append(i-self.DmsCurva()[0])
         delta = []
         for i in valor_a:
-            delta.append(radians((90*i)/(pi*self.__radio)))
-        return valor_a
+            delta.append(((pi/2)*i)/(pi*self.__radio))
+        cuerdas_dh = []
+        for i in delta:
+            cuerdas_dh.append(2*self.__radio*sin(i))
+        azimuts = []
+        for i in delta:
+            if self.curvaDerecha():
+                azimuts.append(self.azimuts()[0]+i)
+            else:
+                azimuts.append(self.azimuts()[0]-i)
 
 
-curva = Curva(1, "Linares", ((1000, 1000), (1500, 1500),
-              (1600, 1400)), 3000, 20, 0, 30)
+curva = Curva(1, "Linares", ((43.595, 448.897), (191.724, 404.958),
+                             (314.465, 358.866)), 200, 4, 3, 0, 30)
 
+print(curva.azimuts())
+print(curva.alpha_medio())
 print(curva.Resumen())
 print(curva.coordenadasCurva())
-print((degrees(curva.coordenadasCurva()[-1]))*(10/9))
+
+print(curva.DmsLineaEntrada())
+print(curva.DmsCurva())
+print(curva.DmsLineaSalida())
+
+
+1000, 1000
+1500, 1500
+1900, 900
