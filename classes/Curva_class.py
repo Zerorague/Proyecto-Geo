@@ -1,6 +1,7 @@
 
 from user_class import User, usuario
 from math import radians, sqrt, atan, tan, sin, degrees, cos, acos, pi
+import xlwt
 
 
 class Curva():
@@ -151,10 +152,6 @@ class Curva():
 
         return (azimutOne, azimutTwo, azimuthThree)
 
-    # def anguloExterior(self):
-    #     distancia_1_2, distancia_2_3, distancia_1_3 = self.distancias_vertices()
-    #     return 2*pi-(acos(((distancia_1_2**2+distancia_2_3**2-(distancia_1_3**2))/(2*distancia_1_2*distancia_2_3))))
-
     def curvaDerecha(self):
         az1, az2, az3 = self.azimuts()
         del az3
@@ -290,21 +287,90 @@ class Curva():
                 azimuts.append(self.azimuts()[0]+i)
             else:
                 azimuts.append(self.azimuts()[0]-i)
+        coordenadas = []
+        contador_dm_curva = 0
+        contador_cuerdas_dh = 0
+        contador_azimuts = 0
+        while contador_dm_curva < len(self.DmsCurva()):
+            coordenadas.append((round((coordenadaPrincipioCurva[0]+(cuerdas_dh[contador_cuerdas_dh]*sin(azimuts[contador_azimuts]))), 3), (round(
+                coordenadaPrincipioCurva[1]+(cuerdas_dh[contador_cuerdas_dh]*cos(azimuts[contador_azimuts])), 3))))
+            contador_dm_curva += 1
+            contador_cuerdas_dh += 1
+            contador_azimuts += 1
+        return coordenadas
+
+    def coordenadasSalida(self):
+        az1, az2, az3 = self.azimuts()
+        coordenadaFc = self.coordenadasCurva()[-1]
+        del az1, az3
+        dh = []
+        coordenadas = []
+        for i in self.DmsLineaSalida():
+            dh.append(i-self.DmsCurva()[-1])
+        for i in dh:
+            coordenadas.append((
+                (round(coordenadaFc[0]+i*sin(az2), 3)), (round(coordenadaFc[1]+i*cos(az2), 3))))
+        return coordenadas
+
+    def exportaExcel(self, directorio):
+        nuevoArchivo = xlwt.Workbook()
+        hoja = nuevoArchivo.add_sheet(self.__project_name)
+        hoja.write(0, 0, "Desc")
+        hoja.write(0, 1, "Dm")
+        hoja.write(0, 2, "Este")
+        hoja.write(0, 3, "Norte")
+
+        hoja.write(0, 5, "VP")
+        hoja.write(1, 5, "A")
+        hoja.write(2, 5, "R")
+        hoja.write(3, 5, "T")
+        hoja.write(4, 5, "S")
+        hoja.write(5, 5, "DC")
+
+        hoja.write(0, 6, f"{self.__vp}km/hr")
+        hoja.write(1, 6, f"{round(degrees(self.Alfa())*(10/9),4)}g")
+        hoja.write(2, 6, f"{round(self.__radio,3)}m")
+        hoja.write(3, 6, f"{round(self.Tangente(),3)}m")
+        hoja.write(4, 6, f"{round(self.Secante(),3)}m")
+        hoja.write(5, 6, f"{round(self.desarrolloCurva(),3)}m")
+
+        hoja.write(len(self.DmsLineaEntrada())+1, 0, "PC")
+        hoja.write(len(self.DmsLineaEntrada())+len(self.DmsCurva()), 0, "FC")
+
+        contador = 1
+        for i in self.DmsLineaEntrada():
+            hoja.write(contador, 1, i)
+            contador += 1
+        contador = 1+len(self.DmsLineaEntrada())
+        for i in self.DmsCurva():
+            hoja.write(contador, 1, i)
+            contador += 1
+        contador = 1+len(self.DmsLineaEntrada())+len(self.DmsCurva())
+        for i in self.DmsLineaSalida():
+            hoja.write(contador, 1, i)
+            contador += 1
+
+        contador = 1
+        for i in self.coordenadasEntrada():
+            hoja.write(contador, 2, i[0])
+            hoja.write(contador, 3, i[1])
+            contador += 1
+        contador = 1+len(self.coordenadasEntrada())
+        for i in self.coordenadasCurva():
+            hoja.write(contador, 2, i[0])
+            hoja.write(contador, 3, i[1])
+            contador += 1
+        contador = 1+len(self.coordenadasEntrada()) + \
+            len(self.coordenadasCurva())
+        for i in self.coordenadasSalida():
+            hoja.write(contador, 2, i[0])
+            hoja.write(contador, 3, i[1])
+            contador += 1
+
+        nuevoArchivo.save(directorio)
 
 
 curva = Curva(1, "Linares", ((43.595, 448.897), (191.724, 404.958),
-                             (314.465, 358.866)), 200, 4, 3, 0, 30)
+                             (314.465, 358.866)), 3000, 10, 1, 51.32, 30)
 
-print(curva.azimuts())
-print(curva.alpha_medio())
-print(curva.Resumen())
-print(curva.coordenadasCurva())
-
-print(curva.DmsLineaEntrada())
-print(curva.DmsCurva())
-print(curva.DmsLineaSalida())
-
-
-1000, 1000
-1500, 1500
-1900, 900
+curva.exportaExcel("C:/Users/julio/Desktop/Proyecto/prueba2.xls")
