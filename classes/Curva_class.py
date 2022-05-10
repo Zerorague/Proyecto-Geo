@@ -2,6 +2,9 @@
 from user_class import User, usuario
 from math import radians, sqrt, atan, tan, sin, degrees, cos, acos, pi
 import xlwt
+from tkinter import W, Tk, Label, Entry, Button, filedialog
+
+raiz = Tk()
 
 
 class Curva():
@@ -247,7 +250,7 @@ class Curva():
             self.distancias_vertices()[1]-self.Tangente()
         dms = []
         try:
-            for i in range(self.DmsCurva()[-2], int(distancia), self.__intervalo_recto):
+            for i in range(self.DmsLineaEntrada()[-1], int(distancia), self.__intervalo_recto):
                 if i > distanciaFc:
                     dms.append(i)
             dms.append(distancia)
@@ -370,7 +373,98 @@ class Curva():
         nuevoArchivo.save(directorio)
 
 
-curva = Curva(1, "Linares", ((43.595, 448.897), (191.724, 404.958),
-                             (314.465, 358.866)), 3000, 10, 1, 51.32, 30)
+# ----------------------------interfaz--------------------------------------------
 
-curva.exportaExcel("C:/Users/julio/Desktop/Proyecto/prueba2.xls")
+raiz.title("CCAz")
+raiz.geometry("1000x750")
+raiz.resizable(0, 0)
+raiz.config(background="white")
+
+labelProyecto = Label(raiz, text="Proyecto", width="10", height="2")
+labelProyecto.grid(row=0, column=0, pady=5, padx=10)
+
+labelVertice1 = Label(raiz, text="E\nN\nV1", width="10", height="5")
+labelVertice1.grid(row=1, column=0, rowspan=2, pady=10, padx=10)
+
+labelVertice2 = Label(raiz, text="E\nN\nV2", width="10", height="5")
+labelVertice2.grid(row=3, column=0, rowspan=2, pady=10, padx=10)
+
+labelVertice3 = Label(raiz, text="E\nN\nV3", width="10", height="5")
+labelVertice3.grid(row=5, column=0, rowspan=2, pady=10, padx=10)
+
+labelRadio = Label(raiz, text="Radio", width="10", height="2")
+labelRadio.grid(row=7, column=0, pady=10, padx=10)
+
+labelIntervaloRecto = Label(raiz, text="Inter recto", width="10", height="2")
+labelIntervaloRecto.grid(row=8, column=0, pady=10, padx=10)
+
+labelIntervaloCurva = Label(raiz, text="Inter curva", width="10", height="2")
+labelIntervaloCurva.grid(row=9, column=0, pady=10, padx=10)
+
+labelVp = Label(raiz, text="Vp", width="10", height="2")
+labelVp.grid(row=10, column=0, pady=10, padx=10)
+
+labelDmIni = Label(raiz, text="Dm Ini", width="10", height="2")
+labelDmIni.grid(row=11, column=0, pady=10, padx=10)
+
+entryProyecto = Entry(raiz, background="white")
+entryProyecto.grid(row=0, column=1, sticky="nsew", pady=10, padx=10)
+entryProyecto.config(width="50")
+
+entryV1_este = Entry(raiz, background="white")
+entryV1_este.grid(row=1, column=1, sticky="nsew", pady=10, padx=10)
+entryV1_este.config(width="50")
+
+entryV1_norte = Entry(raiz, background="white")
+entryV1_norte.grid(row=2, column=1, sticky="nsew", pady=10, padx=10)
+entryV1_norte.config(width="50")
+
+entryV2_este = Entry(raiz, background="white")
+entryV2_este.grid(row=3, column=1, sticky="nsew", pady=10, padx=10)
+entryV2_este.config(width="50")
+
+entryV2_norte = Entry(raiz, background="white")
+entryV2_norte.grid(row=4, column=1, sticky="nsew", pady=10, padx=10)
+entryV2_norte.config(width="50")
+
+entryV3_este = Entry(raiz, background="white")
+entryV3_este.grid(row=5, column=1, sticky="nsew", pady=10, padx=10)
+entryV3_este.config(width="50")
+
+entryV3_norte = Entry(raiz, background="white")
+entryV3_norte.grid(row=6, column=1, sticky="nsew", pady=10, padx=10)
+entryV3_norte.config(width="50")
+
+entryRadio = Entry(raiz, background="white")
+entryRadio.grid(row=7, column=1, sticky="nsew", pady=10, padx=10)
+entryRadio.config(width="50")
+
+entryIntervaloRecto = Entry(raiz, background="white")
+entryIntervaloRecto.grid(row=8, column=1, sticky="nsew", pady=10, padx=10)
+entryIntervaloRecto.config(width="50")
+
+entryIntervaloCurva = Entry(raiz, background="white")
+entryIntervaloCurva.grid(row=9, column=1, sticky="nsew", pady=10, padx=10)
+entryIntervaloCurva.config(width="50")
+
+entryVP = Entry(raiz, background="white")
+entryVP.grid(row=10, column=1, sticky="nsew", pady=10, padx=10)
+entryVP.config(width="50")
+
+entryDmIni = Entry(raiz, background="white")
+entryDmIni.grid(row=11, column=1, sticky="nsew", pady=10, padx=10)
+entryDmIni.config(width="50")
+
+curva = Curva(1, str(entryProyecto.get()), ((float(entryV1_este.get()), float(entryV1_norte.get())), (float(entryV2_este.get()), float(entryV2_norte.get())),
+                                            (float(entryV3_este.get()), float(entryV3_norte.get()))), float(entryRadio.get()), entryIntervaloRecto.get(), entryIntervaloCurva.get(), entryDmIni.get(), entryVP.get())
+
+
+buttonExportar = Button(raiz, text="ExportExcel",
+                        command=curva.exportaExcel("prueba.xlsx"))
+buttonExportar.grid(row=12, column=0, columnspan=2)
+
+raiz.mainloop()
+
+
+curva = Curva(1, str(entryProyecto.get()), ((float(entryV1_este.get()), float(entryV1_norte.get())), (float(entryV2_este.get()), float(entryV2_norte.get())),
+                                            (float(entryV3_este.get()), float(entryV3_norte.get()))), float(entryRadio.get()), entryIntervaloRecto.get(), entryIntervaloCurva.get(), entryDmIni.get(), entryVP.get())
