@@ -1,11 +1,17 @@
 
+from ctypes import alignment
+from doctest import master
+
+from pyparsing import col
 from user_class import User, usuario
 from math import radians, sqrt, atan, tan, sin, degrees, cos, acos, pi
 import xlwt
-from tkinter import W, Tk, Label, Entry, Button, filedialog
-
+from tkinter import CENTER, W, Canvas, Tk, Label, Entry, Button, filedialog, Frame
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # --------------------elementos geometricos-----------------------
+
 
 def distancias_vertices():
     DeltaEste1 = float(entryV2_este.get())-float(entryV1_este.get())
@@ -320,18 +326,48 @@ def exportaExcel():
         hoja.write(contador, 3, i[1])
         contador += 1
 
-    nuevoArchivo.save("prueba.xlsx")
+    nuevoArchivo.save(f"{project_name}.xlsx")
 
 
 # ----------------------------interfaz--------------------------------------------
-
-
 raiz = Tk()
+
+
+def estes():
+    x = []
+    for i in coordenadasEntrada():
+        x.append(i[0])
+    for i in coordenadasCurva():
+        x.append(i[0])
+    for i in coordenadasSalida():
+        x.append(i[0])
+    return x
+
+
+def nortes():
+    y = []
+    for i in coordenadasEntrada():
+        y.append(i[1])
+    for i in coordenadasCurva():
+        y.append(i[1])
+    for i in coordenadasSalida():
+        y.append(i[1])
+    return y
+
 
 raiz.title("CCAz")
 raiz.geometry("1000x750")
 raiz.resizable(0, 0)
 raiz.config(background="white")
+
+labelGrafico = Label(raiz, text="Grafico", width="10", height="2")
+labelGrafico.grid(row=0, column=2, pady=5, padx=10)
+
+frame_grafica = Frame(raiz, bg="black")
+frame_grafica.grid(row=1, column=2, sticky="nesw",
+                   rowspan=11, padx=20, pady=10)
+frame_grafica.config(width=500, height=500)
+
 
 labelProyecto = Label(raiz, text="Proyecto", width="10", height="2")
 labelProyecto.grid(row=0, column=0, pady=5, padx=10)
@@ -414,7 +450,24 @@ entryDmIni.config(width="50")
 
 botonExportExcel = Button(raiz, text="ExportExcel",
                           command=exportaExcel)
-botonExportExcel.grid(row=12, column=0, pady=5, padx=10)
+botonExportExcel.grid(row=12, column=0, pady=15,
+                      padx=10, columnspan=2, sticky="ns")
+botonExportExcel.config(width=20)
 
+
+def graficar():
+    fig, axs = plt.subplots(dpi=80, figsize=(
+        6, 8), sharey=True, facecolor='white')
+    axs.plot(estes(), nortes())
+    canvas = FigureCanvasTkAgg(fig, master=frame_grafica)
+    canvas.draw()
+    canvas.get_tk_widget().grid(row=2, column=1)
+
+
+botonGraficar = Button(raiz, text="Graficar",
+                       command=graficar)
+botonGraficar.grid(row=12, column=2, pady=15,
+                   padx=10, columnspan=2, sticky="ns")
+botonGraficar.config(width=20)
 
 raiz.mainloop()
