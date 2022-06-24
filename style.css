@@ -1,6 +1,7 @@
-body{
+body {
     background-color: rgb(255, 255, 255);
 }
+
 main {
     padding: 5% 5%;
 }
@@ -60,16 +61,16 @@ article {
 
 .imagenes img {
 
-    width: 20vw;
-    height: 20vw;
-    border-radius: 25%;
+    width: 100vw;
+    height: 40vw;
+    border-radius: 10%;
 }
 
 .imagenes {
     display: flex;
     justify-content: space-around;
     margin-top: 5%;
-    
+
 }
 
 .marcador {
@@ -79,14 +80,14 @@ article {
     border-radius: 50%;
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     box-shadow: 5px 5px 5px black;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 
 nav li {
-    display:inline-block
+    display: inline-block
 }
 
 nav a {
@@ -95,7 +96,7 @@ nav a {
     margin-right: 0.12em;
     padding: 1em 1.5em;
     background: #ffffff;
-    box-shadow: inset 0px -2px 0px 0px rgba(0,0,0,0.25);
+    box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.25);
     text-decoration: none;
     text-shadow: 1px 1px 0px #000000;
     font-family: Verdana, Geneva, Tahoma, sans-serif;

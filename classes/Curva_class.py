@@ -1,8 +1,5 @@
 
-from ctypes import alignment
 from doctest import master
-
-from pyparsing import col
 from user_class import User, usuario
 from math import radians, sqrt, atan, tan, sin, degrees, cos, acos, pi
 import xlwt
@@ -74,9 +71,9 @@ def azimuts():
 def curvaDerecha():
     az1, az2, az3 = azimuts()
     del az3
-    if az1 > pi and az2 < pi/2:
+    if (2*pi > az1 > pi) and (0 < az2 < pi/2):
         az2 = 2*pi + az2
-    elif az1 < pi/2 and az2 > pi:
+    elif (2*pi > az2 > pi) and (0 < az1 < pi/2):
         az1 = 2*pi + az1
 
     if az1 < az2:
